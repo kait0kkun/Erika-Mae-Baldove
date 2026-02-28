@@ -76,8 +76,8 @@ export default function About() {
                         <motion.a
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            href="https://kait0kkun.github.io/erikamaebaldoveofficial/ERIKA%20MAE%20BALDOVE%20-%20CV.pdf"
-                            download
+                            href={`${import.meta.env.BASE_URL}ERIKA MAE BALDOVE - CV.pdf`}
+                            download="ERIKA MAE BALDOVE - CV.pdf"
                             className="btn-primary"
                         >
                             <Download size={20} /> Download Resume

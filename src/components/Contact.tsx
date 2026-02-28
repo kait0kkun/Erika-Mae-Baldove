@@ -1,19 +1,36 @@
 import { motion } from 'framer-motion';
-import { User, MapPin, Mail, Send } from 'lucide-react';
-import React, { useState } from 'react';
+import { User, MapPin, Mail, Send, CheckCircle, XCircle } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import emailjs from '@emailjs/browser';
+
+// ─── EmailJS credentials (stored safely in .env) ─────────────────────────
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+// ──────────────────────────────────────────────────────────────────────────
 
 export default function Contact() {
+    const formRef = useRef<HTMLFormElement>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!formRef.current) return;
         setIsSubmitting(true);
-        // Mimic API logic like emailjs used to do
-        setTimeout(() => {
-            alert("Message sent successfully!");
-            setIsSubmitting(false);
-            (e.target as HTMLFormElement).reset();
-        }, 1500);
+        setStatus('idle');
+
+        emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current, PUBLIC_KEY)
+            .then(() => {
+                setStatus('success');
+                formRef.current?.reset();
+            })
+            .catch(() => {
+                setStatus('error');
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+            });
     };
 
     return (
@@ -77,16 +94,18 @@ export default function Contact() {
                         style={{ padding: '2.5rem', borderRadius: '20px' }}
                     >
                         <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem', fontWeight: 600 }}>Message Me</h3>
-                        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <form ref={formRef} onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{ display: 'flex', gap: '1rem' }}>
                                 <input
                                     type="text"
+                                    name="from_name"
                                     placeholder="Your Name"
                                     required
                                     style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', color: 'white', outline: 'none' }}
                                 />
                                 <input
                                     type="email"
+                                    name="reply_to"
                                     placeholder="Your Email"
                                     required
                                     style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', color: 'white', outline: 'none' }}
@@ -94,12 +113,14 @@ export default function Contact() {
                             </div>
                             <input
                                 type="text"
+                                name="subject"
                                 placeholder="Subject"
                                 required
                                 style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', color: 'white', outline: 'none' }}
                             />
                             <textarea
                                 rows={5}
+                                name="message"
                                 placeholder="Your Message..."
                                 required
                                 style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', color: 'white', outline: 'none', resize: 'vertical' }}
@@ -113,6 +134,17 @@ export default function Contact() {
                             >
                                 {isSubmitting ? 'Sending...' : <><Send size={20} /> Send Message</>}
                             </button>
+
+                            {status === 'success' && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#4ade80', fontSize: '0.95rem', marginTop: '0.5rem' }}>
+                                    <CheckCircle size={18} /> Message sent successfully! I'll get back to you soon.
+                                </div>
+                            )}
+                            {status === 'error' && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#f87171', fontSize: '0.95rem', marginTop: '0.5rem' }}>
+                                    <XCircle size={18} /> Something went wrong. Please try again or email me directly.
+                                </div>
+                            )}
                         </form>
                     </motion.div>
                 </div>
