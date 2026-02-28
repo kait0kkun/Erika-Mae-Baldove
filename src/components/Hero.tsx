@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, ChevronDown } from 'lucide-react';
+import { ArrowRight, ChevronDown, Download } from 'lucide-react';
 
 export default function Hero() {
     return (
@@ -43,7 +43,7 @@ export default function Hero() {
                         <span style={{ color: 'var(--text-main)', fontWeight: 600 }}>Software Engineer</span>
                     </h2>
 
-                    <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                         <motion.a
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -59,6 +59,16 @@ export default function Hero() {
                             className="btn-secondary"
                         >
                             View Projects
+                        </motion.a>
+                        <motion.a
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            href={`${import.meta.env.BASE_URL}ERIKA-MAE-BALDOVE-CV.pdf`}
+                            download="ERIKA-MAE-BALDOVE-CV.pdf"
+                            className="btn-secondary"
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                        >
+                            <Download size={20} /> Resume
                         </motion.a>
                     </div>
                 </motion.div>
