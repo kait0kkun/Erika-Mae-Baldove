@@ -1,69 +1,112 @@
 import { useState, useEffect } from 'react';
 
 const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Contact', href: '#contact' },
+  { name: 'Home', href: '#home' },
+  { name: 'About', href: '#about' },
+  { name: 'Services', href: '#services' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'Skills', href: '#skills' },
+  { name: 'Contact', href: '#contact' },
 ];
 
-export default function Navbar() {
-    const [isScrolled, setIsScrolled] = useState(false);
+function NavLink({ name, href }: { name: string; href: string }) {
+  const [hovered, setHovered] = useState(false);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    return (
-        <nav
-            className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'glass py-4 shadow-lg' : 'bg-transparent py-6'
-                }`}
-            style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100%',
-                padding: isScrolled ? '15px 0' : '25px 0',
-                transition: '0.3s',
-                zIndex: 1000
-            }}
+  return (
+    <a
+      href={href}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        color: 'var(--text)',
+        textDecoration: 'none',
+        fontWeight: 500,
+        fontSize: '0.9rem',
+        letterSpacing: '0.03em',
+        display: 'inline-flex',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {name.split('').map((char, i) => (
+        <span
+          key={i}
+          style={{
+            display: 'inline-block',
+            transition: 'transform 0.3s ease, opacity 0.3s ease',
+            transitionDelay: `${i * 30}ms`,
+            transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
+            opacity: hovered ? 1 : 0.7,
+            color: hovered ? 'var(--primary)' : undefined,
+          }}
         >
-            <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <a href="#home" style={{ color: 'white', textDecoration: 'none', fontSize: '1.8rem', fontWeight: 800 }}>
-                    Port<span className="gradient-text">folio.</span>
-                </a>
+          {char}
+        </span>
+      ))}
+    </a>
+  );
+}
 
-                {/* Desktop Menu */}
-                <ul className="desktop-menu" style={{ display: 'flex', listStyle: 'none', gap: '2rem' }}>
-                    {navLinks.map((link) => (
-                        <li key={link.name}>
-                            <a
-                                href={link.href}
-                                style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 500, transition: '0.3s' }}
-                                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
-                                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-main)'}
-                            >
-                                {link.name}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
+export default function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
 
-                {/* Mobile menu logic would go here, simplified for elegance */}
-            </div>
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-            {/* We add basic responsive hidden class trick inline or using pure css */}
-            <style>{`
-        @media (max-width: 768px) {
-          .desktop-menu { display: none !important; }
-        }
-      `}</style>
-        </nav>
-    );
+  return (
+    <nav
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        padding: isScrolled ? '10px 0' : '18px 0',
+        transition: '0.3s',
+        zIndex: 1000,
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
+      <div
+        style={{
+          width: '90%',
+          maxWidth: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: isScrolled ? '0 24px' : '0 24px',
+          borderRadius: 999,
+          background: isScrolled ? 'color-mix(in srgb, var(--bg-dark) 88%, transparent)' : 'transparent',
+          backdropFilter: isScrolled ? 'blur(16px)' : 'none',
+          border: isScrolled ? '1px solid var(--border)' : '1px solid transparent',
+          boxShadow: isScrolled ? '0 4px 30px rgba(0,0,0,0.2)' : 'none',
+          transition: '0.3s',
+          minHeight: 52,
+          flexWrap: 'wrap',
+        }}
+      >
+        <ul
+          style={{
+            display: 'flex',
+            listStyle: 'none',
+            gap: 'clamp(0.6rem, 2vw, 2rem)',
+            alignItems: 'center',
+            margin: 0,
+            padding: 0,
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}
+        >
+          {navLinks.map((link) => (
+            <li key={link.name}>
+              <NavLink name={link.name} href={link.href} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  );
 }

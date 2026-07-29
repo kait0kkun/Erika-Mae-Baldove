@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Cpu, Database, Server } from 'lucide-react';
+import { Download, Cpu, Database, Server, RefreshCw } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function About() {
+    const { hairColor, cycleHairColor } = useTheme();
+    const [tooltip, setTooltip] = useState('');
+
     return (
         <section id="about" style={{ position: 'relative' }}>
             <div className="container">
@@ -27,17 +32,61 @@ export default function About() {
                             zIndex: 0
                         }} />
                         <img
-                            src="/images/kai01.jpg"
+                            src={`/images/${hairColor}.png`}
                             alt="Erika Mae Baldove"
+                            onClick={cycleHairColor}
                             style={{
                                 width: '100%',
                                 borderRadius: '20px',
                                 position: 'relative',
                                 zIndex: 1,
                                 boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-                                objectFit: 'cover'
+                                objectFit: 'cover',
+                                cursor: 'pointer',
+                                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'scale(1.02)';
+                                e.currentTarget.style.boxShadow = '0 25px 50px rgba(0,0,0,0.5)';
+                                setTooltip('click to change theme');
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'scale(1)';
+                                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
+                                setTooltip('');
                             }}
                         />
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '20px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            zIndex: 10,
+                            opacity: tooltip ? 1 : 0,
+                            transition: 'opacity 0.3s ease',
+                            background: 'rgba(0,0,0,0.75)',
+                            backdropFilter: 'blur(8px)',
+                            padding: '8px 16px',
+                            borderRadius: '30px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            color: '#fff',
+                            fontSize: '0.8rem',
+                            fontWeight: 500,
+                            pointerEvents: 'none',
+                            whiteSpace: 'nowrap',
+                            border: '1px solid rgba(255,255,255,0.15)'
+                        }}>
+                            <RefreshCw size={14} style={{ animation: tooltip ? 'spin 1.5s linear infinite' : 'none' }} />
+                            {tooltip}
+                        </div>
+                        <style>{`
+                            @keyframes spin {
+                                from { transform: rotate(0deg); }
+                                to { transform: rotate(360deg); }
+                            }
+                        `}</style>
                     </motion.div>
 
                     <motion.div
