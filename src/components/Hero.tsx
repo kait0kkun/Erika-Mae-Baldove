@@ -17,18 +17,23 @@ export default function Hero() {
         overflow: 'hidden',
       }}
     >
-      <div
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
         style={{
           position: 'absolute',
           inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
           zIndex: 0,
-          background: `
-            radial-gradient(ellipse at 20% 50%, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 60%),
-            radial-gradient(ellipse at 80% 50%, color-mix(in srgb, var(--secondary) 10%, transparent) 0%, transparent 60%),
-            var(--bg-dark)
-          `,
         }}
-      />
+      >
+        <source src="/images/hero%20section.mp4" type="video/mp4" />
+      </video>
+      <div style={{ position: 'absolute', inset: 0, backgroundColor: 'var(--bg-dark)', opacity: 0.85, zIndex: 1 }} />
 
       <div className="container" style={{ position: 'relative', zIndex: 10, textAlign: 'center' }}>
         <motion.div
